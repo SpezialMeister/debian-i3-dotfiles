@@ -13,26 +13,6 @@ set $mod Mod4
 
 set $term alacritty
 
-# ------------------------------------------------------------
-# Nord color palette (https://nordtheme.com)
-# ------------------------------------------------------------
-set $nord0  #2e3440
-set $nord1  #3b4252
-set $nord2  #434c5e
-set $nord3  #4c566a
-set $nord4  #d8dee9
-set $nord5  #e5e9f0
-set $nord6  #eceff4
-set $nord7  #8fbcbb
-set $nord8  #88c0d0
-set $nord9  #81a1c1
-set $nord10 #5e81ac
-set $nord11 #bf616a
-set $nord12 #d08770
-set $nord13 #ebcb8b
-set $nord14 #a3be8c
-set $nord15 #b48ead
-
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -50,16 +30,12 @@ exec --no-startup-id /usr/libexec/gvfsd
 exec --no-startup-id volumeicon
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-clipman --daemon
-# exec --no-startup-id autotiling
+exec --no-startup-id autotiling
 exec --no-startup-id xset -b
 
 exec --no-startup-id dropbox stop
-exec_always --no-startup-id better_autotile
 
 exec_always --no-startup-id nitrogen --restore
-# picom compositor: blur, shadows, fading
-exec_always --no-startup-id sh -c 'pkill -x picom; sleep 0.3; picom --config ~/.config/i3/picom.conf -b'
-exec --no-startup-id xmodmap ~/.Xmodmap
 
 
 
@@ -156,9 +132,6 @@ bindsym $mod+h split h
 # split in vertical orientation
 bindsym $mod+v split v
 
-# custom: split toggle
-bindsym $mod+q split toggle
-
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
 
@@ -253,6 +226,13 @@ mode "resize" {
 
 for_window [class="Yad"] floating enable, border normal
 
+# Border- Raender
+# Keine Titelleisten
+default_border pixel 2
+default_floating_border pixel 2
+
+
+
 # tab switcher
 bindsym $mod+Tab exec rofi -show window
 
@@ -288,16 +268,11 @@ for_window [class="Orange" title="^(?!Untitled .*|.*\.ows).*$"] \
 # Design und Layout
 
 # gaps
-gaps inner 10
-gaps outer 4
+gaps inner 5
+gaps outer 5
 smart_gaps on
 
 hide_edge_borders smart
-
-# Border- Raender
-# Keine Titelleisten
-default_border pixel 2
-default_floating_border pixel 2
 
 
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -306,21 +281,14 @@ bar {
     status_command i3status
     position bottom
     tray_output primary
-    tray_padding 4
-    font pango:JetBrains Mono 10
-    separator_symbol "  "
+    font pango:JetBrains Mono 9
+
 
     colors {
-        background $nord0
-        statusline $nord4
-        separator  $nord3
+        background #1e1e1e
+        statusline #dcdcdc
 
-        # class            border  bground text
-        focused_workspace  $nord9  $nord9  $nord0
-        active_workspace   $nord2  $nord2  $nord4
-        inactive_workspace $nord0  $nord0  $nord3
-        urgent_workspace   $nord11 $nord11 $nord6
-        binding_mode       $nord12 $nord12 $nord0
+        
     }
 }
 
