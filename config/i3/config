@@ -36,7 +36,7 @@ set $nord15 #b48ead
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 6
+font pango:monospace Bold 6
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -58,7 +58,7 @@ exec_always --no-startup-id better_autotile
 
 exec_always --no-startup-id nitrogen --restore
 # picom compositor: blur, shadows, fading
-exec_always --no-startup-id sh -c 'pkill -x picom; sleep 0.3; picom --config ~/.config/i3/picom.conf -b'
+# exec_always --no-startup-id sh -c 'pkill -x picom; sleep 0.3; picom --config ~/.config/i3/picom.conf -b'
 exec --no-startup-id xmodmap ~/.Xmodmap
 
 
@@ -102,6 +102,9 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
 # bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
 # bindsym XF86AudioMute exec amixer -q set Master toggle
 
+
+bindsym $mod+Shift+m exec --no-startup-id musikmodus toggle
+exec --no-startup-id musikmodus notify-if-rt
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -256,6 +259,10 @@ for_window [class="Yad"] floating enable, border normal
 # tab switcher
 bindsym $mod+Tab exec rofi -show window
 
+# Scratchpad
+bindsym $mod+Shift+period move scratchpad
+bindsym $mod+period scratchpad show
+
 # Eigene Programme shortcuts
 bindsym Print exec xfce4-screenshooter
 
@@ -285,20 +292,45 @@ for_window [class="Orange" title="^(?!Untitled .*|.*\.ows).*$"] \
     resize set 900 600
 
 
+# Waveform: Plugin- und Dialogfenster tragen dieselbe class/instance wie das
+# Hauptfenster und setzen weder WM_WINDOW_ROLE noch WM_TRANSIENT_FOR — der
+# Titel ist das einzige Unterscheidungsmerkmal.
+
+# 1) Standard: alle Waveform-Fenster erstmal floaten
+for_window [class="Waveform"] floating enable
+
+# 2) Hauptfenster wieder ins Tiling zwingen
+for_window [class="Waveform" title="^Waveform FREE$"] floating disable
+
+# 3) Optionale Startposition für Dialoge — greift auch bei jeder späteren
+#    Titeländerung, ein manuell verschobenes Plugin springt dann zurück
+# for_window [class="Waveform" title="^(?!Waveform FREE$).*$"] \
+#     move position center
+
+
 # Design und Layout
 
 # gaps
-gaps inner 10
-gaps outer 4
+gaps inner 0
+gaps outer 0
 smart_gaps on
 
 hide_edge_borders smart
 
 # Border- Raender
 # Keine Titelleisten
-default_border pixel 2
-default_floating_border pixel 2
+default_border pixel 4
+default_floating_border pixel 4
 
+
+# window border colors
+# class                 border   bground  text     indicator child_border
+client.focused          $nord9   $nord9   $nord0   $nord8    $nord9
+client.focused_inactive $nord1   $nord1   $nord4   $nord1    $nord1
+client.unfocused        $nord1   $nord1   $nord3   $nord1    $nord1
+client.urgent           $nord11  $nord11  $nord6   $nord11   $nord11
+client.placeholder      $nord0   $nord0   $nord4   $nord0    $nord0
+client.background       $nord0
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
