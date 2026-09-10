@@ -26,19 +26,25 @@ bash "$SCRIPT_DIR/install-packages.sh"
 
 echo ""
 echo "-------------------------------------------------"
-echo "Schritt 2: Symlinks setzen"
+echo "Schritt 2: better_autotile bauen und installieren"
+echo "-------------------------------------------------"
+bash "$SCRIPT_DIR/build-better-autotile.sh"
+
+echo ""
+echo "-------------------------------------------------"
+echo "Schritt 3: Symlinks setzen"
 echo "-------------------------------------------------"
 bash "$SCRIPT_DIR/setup-symlinks.sh"
 
 echo ""
 echo "-------------------------------------------------"
-echo "Schritt 3: Systemumgebung konfigurieren"
+echo "Schritt 4: Systemumgebung konfigurieren"
 echo "-------------------------------------------------"
 bash "$SCRIPT_DIR/configure-environment.sh"
 
 echo ""
 echo "-------------------------------------------------"
-echo "Schritt 4: System überprüfen"
+echo "Schritt 5: System überprüfen"
 echo "-------------------------------------------------"
 su - "$TARGET_USER" -c "bash \"$SCRIPT_DIR/check-system.sh\""
 

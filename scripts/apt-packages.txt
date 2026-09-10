@@ -32,6 +32,7 @@ gvfs
 udiskie
 git
 gitk
+build-essential
 nano
 r-base
 alacritty
@@ -43,7 +44,6 @@ ncdu
 tree
 bash-completion
 rofi
-autotiling
 arandr
 dunst
 feh

@@ -12,6 +12,7 @@ Dotfiles und Setup-Scripts für eine frische Debian i3-Installation.
 - **Sync**: Dropbox
 - **Notizen**: Obsidian
 - **GTK Theme**: Arc-Dark + Papirus-Dark Icons
+- **Autotiling**: [better_autotile](vendor/better-autotile-c) (wird aus vendortem Quellcode gebaut)
 - Weitere Tools: rofi, dunst, thunar, picom, nitrogen, arandr, ...
 
 ## Bootstrap auf einer frischen Debian-Installation
@@ -69,4 +70,8 @@ config/         Konfigurationsdateien (werden per Symlink eingebunden)
   gitconfig     Git-Konfiguration
 data/           Wallpaper und andere statische Dateien
 scripts/        Setup-Scripts
+vendor/
+  better-autotile-c/  Vendorter Quellcode von better_autotile (wird von
+                       scripts/build-better-autotile.sh gebaut und nach
+                       /usr/local/bin installiert)
 ```
