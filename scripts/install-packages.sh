@@ -29,19 +29,36 @@ echo ""
 
 echo "Teil 2: Firefox, Sublime Text und Dropbox"
 echo "Vorbereitung..."
-apt-get install -y curl gnupg ca-certificates
+apt-get install -y curl ca-certificates
+
+# Repos im deb822-Format (.sources), Schlüssel ASCII-armored als .asc.
+# apt liest .asc direkt, ein gpg --dearmor ist nicht nötig.
+install -d -m 0755 /etc/apt/keyrings
+
+# Dateien älterer Script-Versionen (.list + dearmorte .gpg) entfernen,
+# sonst kollidieren die Signed-By-Werte für dasselbe Repo.
+rm -f /etc/apt/sources.list.d/mozilla.list \
+      /etc/apt/sources.list.d/sublime-text.list \
+      /etc/apt/sources.list.d/dropbox.list \
+      /etc/apt/keyrings/mozilla.gpg \
+      /etc/apt/keyrings/sublimehq.gpg \
+      /etc/apt/keyrings/dropbox.gpg
 
 # -------------------------------------------------
 # Mozilla Repo (aktuelles Firefox, nicht ESR)
 # -------------------------------------------------
 echo "Mozilla Repository wird eingerichtet..."
-install -d -m 0755 /etc/apt/keyrings
-
+# Endung .gpg in der URL, Inhalt ist trotzdem ASCII-armored
 curl -fsSL https://packages.mozilla.org/apt/repo-signing-key.gpg \
-    | gpg --dearmor --yes -o /etc/apt/keyrings/mozilla.gpg
+    -o /etc/apt/keyrings/packages.mozilla.org.asc
 
-echo "deb [signed-by=/etc/apt/keyrings/mozilla.gpg] https://packages.mozilla.org/apt mozilla main" \
-    > /etc/apt/sources.list.d/mozilla.list
+cat > /etc/apt/sources.list.d/mozilla.sources <<EOF
+Types: deb
+URIs: https://packages.mozilla.org/apt
+Suites: mozilla
+Components: main
+Signed-By: /etc/apt/keyrings/packages.mozilla.org.asc
+EOF
 
 # Pinning (damit Mozilla-Version bevorzugt wird)
 cat > /etc/apt/preferences.d/mozilla <<EOF
@@ -55,21 +72,32 @@ EOF
 # -------------------------------------------------
 echo "Sublime Repository wird eingerichtet..."
 curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg \
-    | gpg --dearmor --yes -o /etc/apt/keyrings/sublimehq.gpg
+    -o /etc/apt/keyrings/sublimehq-pub.asc
 
-echo "deb [signed-by=/etc/apt/keyrings/sublimehq.gpg] https://download.sublimetext.com/ apt/stable/" \
-    > /etc/apt/sources.list.d/sublime-text.list
+# Flat-Repo: Suite endet auf "/", daher keine Components
+cat > /etc/apt/sources.list.d/sublime-text.sources <<EOF
+Types: deb
+URIs: https://download.sublimetext.com/
+Suites: apt/stable/
+Signed-By: /etc/apt/keyrings/sublimehq-pub.asc
+EOF
 
 # -------------------------------------------------
 # Dropbox Repo
 # -------------------------------------------------
 echo "Dropbox Repository wird eingerichtet..."
 curl -fsSL https://linux.dropbox.com/fedora/rpm-public-key.asc \
-    | gpg --dearmor --yes -o /etc/apt/keyrings/dropbox.gpg
+    -o /etc/apt/keyrings/dropbox.asc
 
 # Dropbox's Debian repo uses 'sid' regardless of the actual Debian version
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/dropbox.gpg] https://linux.dropbox.com/debian sid main" \
-    > /etc/apt/sources.list.d/dropbox.list
+cat > /etc/apt/sources.list.d/dropbox.sources <<EOF
+Types: deb
+URIs: https://linux.dropbox.com/debian
+Suites: sid
+Components: main
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/dropbox.asc
+EOF
 
 # -------------------------------------------------
 # Installation
